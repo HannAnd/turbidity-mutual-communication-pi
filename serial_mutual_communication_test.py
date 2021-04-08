@@ -5,16 +5,15 @@
 # Pi should send command to Arduino to read and then send turbidity
 # once Pi receives turbidity it will tell the Arduino to open
     # a specific relay channel based on the turbidity value
-# this whole thing should repeat every, I dunno, minute or so?
 
 import serial    # allows Pi to read serial data
 #import threading    # allows Pi to create threads (needed for timer)
 import time    # allows Pi to keep track of time
-wait = "no"    # to stop the Pi from spamming Serial with the "turbidread" command
+wait = "no"    # to stop the Pi from spam printing "Read request sent"
 start = "yes"    # for closing all relay channels at start up
 
 if __name__ == '__main__':    #defines this file as primary module
-    # calls the serial monitor using serial.Serial at port 'ttyACM0',
+    # calls the serial monitor using serial.Serial at port 'ttyACM0' (change if needed),
     # sets the baud rate (needs to be the same as the Arduino), and sets a
     # timeout so that if the Arduino stops sending info the Pi doesn't
     # get stuck in a loop
@@ -34,7 +33,7 @@ if __name__ == '__main__':    #defines this file as primary module
             print("Read request sent")
             # ensures the string is only printed once per request
             wait = "yes"
-        # waiting for buffer to clear
+        # waiting for buffer to clear again, not sure if this is necessary
         ser.flush()
         # telling the Arduino to send a turbidity reading
         # the "b" encodes the string as bytes for transmission through
@@ -45,17 +44,17 @@ if __name__ == '__main__':    #defines this file as primary module
         if ser.in_waiting > 0:
             # readline() reads all bytes in a line from serial monitor
             # decode() converts the bytes from their raw form to their
-            # intended string
+              # intended string
             # rstrip() removes "trailing characters" and excess white space from
-            # the beginning/end of a line
+              # the beginning/end of a line
             turbidity = ser.readline().decode('utf-8').rstrip()
             # prints turbidity reading for visibility
             print(turbidity)
         # sends commands to the Arduino about which relay channel to open
-        # based on what the turbidity is
+          # based on what the turbidity is
         # here we're using three liquids (plain water, concentrated coffee,
-        # unconcentrated coffee) and then the fourth channel is when the
-        # sensor is just held in the air
+          # unconcentrated coffee) and then the fourth channel is when the
+          # sensor is just held in the air
             # below values have to be calibrated in a separate script
             if float(turbidity) <= 4.65 and float(turbidity) > 4.50:    # plain water
                 ser.write(b"channel1\n")    # channel 1

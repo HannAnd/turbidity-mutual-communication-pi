@@ -1,4 +1,4 @@
-# for calibrating the turbidity readings inthe mutual communication test code
+# for calibrating the turbidity readings in the mutual communication test code
 
 import serial    # allows Pi to read serial data
 #import threading    # allows Pi to create threads (needed for timer)
@@ -34,5 +34,5 @@ if __name__ == '__main__':    #defines this file as primary module
             # the beginning/end of a line
         if ser.in_waiting > 0:
             turbidity = ser.readline().decode('utf-8').rstrip()
-            # just printing for visibility
+            # check the printed value ranges to calibrate the main file
             print(turbidity)
