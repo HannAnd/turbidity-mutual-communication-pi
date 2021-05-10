@@ -3,7 +3,7 @@
 import serial    # allows Pi to read serial data
 #import threading    # allows Pi to create threads (needed for timer)
 import time    # allows Pi to keep track of time
-wait = "no"
+cycle = 4
 
 if __name__ == '__main__':    #defines this file as primary module
     # calls the serial monitor using serial.Serial at port 'ttyACM0',
@@ -21,13 +21,11 @@ if __name__ == '__main__':    #defines this file as primary module
         # telling the Arduino to send a turbidity reading
         # the "b" encodes the string as bytes for transmission through
         # Serial and the \n indicates the end of the line
-        if wait == "no":
-            ser.write(b"turbidread\n")
-            wait = "yes"
-        elif wait == "yes":
-            time.sleep(5)
-            ser.write(b"turbidread\n")
-        # readline() reads all bytes in a line from serial monitor
+        # delay between readings to prevent spamming
+        time.sleep(5)
+        # requests turbidity reading from Arduino
+        ser.write(b"1\n")
+         # readline() reads all bytes in a line from serial monitor
             # decode() converts the bytes from their raw form to their
             # intended string
             # rstrip() removes "trailing characters" and excess white space from
@@ -36,3 +34,16 @@ if __name__ == '__main__':    #defines this file as primary module
             turbidity = ser.readline().decode('utf-8').rstrip()
             # check the printed value ranges to calibrate the main file
             print(turbidity)
+        # short delay between read command and channel command to avoid spamming
+        time.sleep(0.5)
+        # opens one of the relay channels to verify relay commands are working
+        ser.write(str(cycle).encode('utf-8'))
+        print(cycle)
+        # cycles through a different relay command for each reading
+        if cycle == 8:
+            cycle = 4
+        else:
+            cycle += 1
+        
+            
+        
