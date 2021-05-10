@@ -4,6 +4,7 @@ import serial    # allows Pi to read serial data
 #import threading    # allows Pi to create threads (needed for timer)
 import time    # allows Pi to keep track of time
 cycle = 4
+counter = 1
 
 if __name__ == '__main__':    #defines this file as primary module
     # calls the serial monitor using serial.Serial at port 'ttyACM0',
@@ -11,9 +12,7 @@ if __name__ == '__main__':    #defines this file as primary module
     # timeout so that if the Arduino stops sending info the Pi doesn't
     # get stuck in a loop
     ser = serial.Serial('/dev/ttyACM0', 9600, timeout = 1)
-        # clearing out the internal buffer of the file
-    # kind of like clearing the workspace in R
-    # basically keeps the variable clean so it doesn't return old values
+    # clearing out the internal buffer of the file
     ser.flush()
     
     while True:    # creates an infinite loop because this should always
@@ -33,7 +32,9 @@ if __name__ == '__main__':    #defines this file as primary module
         if ser.in_waiting > 0:
             turbidity = ser.readline().decode('utf-8').rstrip()
             # check the printed value ranges to calibrate the main file
+            print("Reading " + str(counter))
             print(turbidity)
+            counter += 1
         # short delay between read command and channel command to avoid spamming
         time.sleep(0.5)
         # opens one of the relay channels to verify relay commands are working

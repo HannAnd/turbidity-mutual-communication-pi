@@ -1,6 +1,3 @@
-#possibility: the sleep delay just means the Pi waits to read whatever the next
-#value in line is rather than reading whatever is available /at that particular moment/
-
 # test code for mutual communication between Pi and Arduino
 # Pi should send command to Arduino to read and then send turbidity
 # once Pi receives turbidity it will tell the Arduino to open
@@ -12,6 +9,7 @@ import serial    # allows Pi to read serial data
 import time    # allows Pi to keep track of time
 wait = "no"    # to stop the Pi from spam printing "Read request sent"
 start = "yes"    # for closing all relay channels at start up
+counter = 1    # creating a counter for the readings
 
 if __name__ == '__main__':    #defines this file as primary module
     # calls the serial monitor using serial.Serial at port 'ttyACM0' (change if needed),
@@ -21,19 +19,19 @@ if __name__ == '__main__':    #defines this file as primary module
     ser = serial.Serial('/dev/ttyACM0', 9600, timeout = 1)
     # waiting for buffer to clear
     ser.flush()
-    # giving Serial time to open
-    time.sleep(0.1)
     # closing all channels for a clean start of code
     ser.write(b"8\n")
     print("Starting with all channels off")
+    # delay to not override the next on/off relay command
+    time.sleep(2)
     
     while True:    # creates an infinite loop because this should always
                    # be the primary module
-        # printing that the read request was sent
         if wait == "no":
-            print("Read request sent")
+            print("----Read request " + str(counter) + " sent----")
             # ensures the string is only printed once per request
             wait = "yes"
+            counter += 1
         # waiting for buffer to clear again, not sure if this is necessary
         #ser.flush()
         # telling the Arduino to send a turbidity reading
@@ -59,44 +57,43 @@ if __name__ == '__main__':    #defines this file as primary module
             if float(turbidity) <= 4.65 and float(turbidity) > 4.55:    # plain water
                 ser.write(b"4\n")    # channel 1
                 print("Plain water.")
-                print("Move sensor now (10 sec)")
-                # allows for a 10 second delay to move the sensor
-                ser.flush()
+                print("Move sensor now (20 sec)")
+                # allows for a 20 second delay to move the sensor
                 time.sleep(20)
                 wait = "no"
             elif float(turbidity) <= 4.54 and float(turbidity) > 4.50:    # weak coffee
                 ser.write(b"5\n")    # channel 2
                 print("Weak coffee.")
-                print("Move sensor now (10 sec)")
-                # allows for a 10 second delay to move the sensor
+                print("Move sensor now (20 sec)")
+                # allows for a 20 second delay to move the sensor
                 time.sleep(20)
                 wait = "no"
             elif float(turbidity) <= 4.20 and float(turbidity) > 4.10:    # strong coffee
                 ser.write(b"6\n")    # channel 3
                 print("Strong coffee.")
-                print("Move sensor now (10 sec)")
-                # allows for a 10 second delay to move the sensor
+                print("Move sensor now (20 sec)")
+                # allows for a 20 second delay to move the sensor
                 time.sleep(20)
                 wait = "no"
             elif float(turbidity) <= 4.05 and float(turbidity) > 3.50:    # air detection
                 ser.write(b"7\n")    # channel 4
                 print("Air detected.")
-                print("Move sensor now (10 sec)")
-                # allows for a 10 second delay to move the sensor
+                print("Move sensor now (20 sec)")
+                # allows for a 20 second delay to move the sensor
                 time.sleep(20)
                 wait = "no"
             # should only happen if something has gone wrong
             else:
                 ser.write(b"8\n")    # all channels off
                 print("Invalid turbidity reading.")
-                print("Move sensor now (10 sec)")
-                # allows for a 10 second delay to move the sensor
+                print("Move sensor now (20 sec)")
+                # allows for a 20 second delay to move the sensor
                 time.sleep(20)
                 wait = "no"
 
 #and then after this I would like to create an alternative method where it checks
 #every set amount of time based on the Pi's internal clock
     #the first technique will be used for the Pi logging the turbidity of a
-    #chamber after a water change (prolly 30 minute later)
+    #chamber after a water change (probably 30 minute later)
     #the second technique will be used in automating when the water changes
     #themselves will happen
