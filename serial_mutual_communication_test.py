@@ -22,23 +22,23 @@ if __name__ == '__main__':    #defines this file as primary module
     # closing all channels for a clean start of code
     ser.write(b"8\n")
     print("Starting with all channels off")
-    # delay to not override the next on/off relay command
+    # short delay before first read request
     time.sleep(2)
     
     while True:    # creates an infinite loop because this should always
                    # be the primary module
         if wait == "no":
+            # displays when a request is sent and how many requests have been sent
             print("----Read request " + str(counter) + " sent----")
             # ensures the string is only printed once per request
             wait = "yes"
             counter += 1
-        # waiting for buffer to clear again, not sure if this is necessary
-        #ser.flush()
-        # telling the Arduino to send a turbidity reading
-        # the "b" encodes the string as bytes for transmission through
-        # Serial and the \n indicates the end of the line
-        ser.write(b"1\n")
+            # telling the Arduino to send a turbidity reading
+            # the "b" encodes the string as bytes for transmission through
+            # Serial and the \n indicates the end of the line
+            ser.write(b"1\n")
         
+        # checks if something is in Serial
         if ser.in_waiting > 0:
             # readline() reads all bytes in a line from serial monitor
             # decode() converts the bytes from their raw form to their

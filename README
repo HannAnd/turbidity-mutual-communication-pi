@@ -12,13 +12,6 @@ The Arduino sends turbidity readings when requested (an average of five readings
 relay channels based on the commands of the Pi.
 
 
-Known problems:
--The Arduino will not open/close relay channels in response to the first turbidity reading, only the
-readings after the first.
--Turbidity readings work as expected in the callibration code, but in the communication test code all
-turbidity readings remain around whatever the first reading was (with some noise) regardless of which
-solution the turbidity sensor is currently placed in.
-
 Features in progress:
 -Ability to send more than one type of variable from the Arduino to the Raspberry Pi (such as a string
 to communicate that the relay channel has been flipped).

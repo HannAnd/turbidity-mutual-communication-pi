@@ -38,13 +38,10 @@ if __name__ == '__main__':    #defines this file as primary module
         # short delay between read command and channel command to avoid spamming
         time.sleep(0.5)
         # opens one of the relay channels to verify relay commands are working
-        ser.write(str(cycle).encode('utf-8'))
-        print(cycle)
+        #ser.write(str(cycle).encode('utf-8'))
+        #print(cycle)
         # cycles through a different relay command for each reading
-        if cycle == 8:
-            cycle = 4
-        else:
-            cycle += 1
-        
-            
-        
+        #if cycle == 8:
+            #cycle = 4
+        #else:
+            #cycle += 1
